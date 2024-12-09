@@ -39,7 +39,7 @@ module.exports = {
                 dialectOptions: { native: true, ssl: { require: true, rejectUnauthorized: false } },
                 logging: false
             }),
-    LANGUAGE: process.env.LANGUAGE || 'EN',
+    LANGUAGE: process.env.LANGUAGE || 'SI',
     HEROKU_APP: process.env.HEROKU_APP_NAME || '',
     isHEROKU: process.env.HEROKU || '',
     TZ: process.env.TZ || 'Asia/Colombo'
