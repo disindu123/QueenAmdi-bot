@@ -55,48 +55,45 @@ const amdiWA = require('queen_amdi_core/dist/amdiCore');
 const { qrDisplayDL } = require('queen_amdi_core/dist/qrDisplay');
 const amdiWEB = require('queen_amdi_core/qr_code/amdiWEB');
 
-// Start the WhatsApp bot
-amdiWA.start();
-
-const events = async () => {
+const startBot = async () => {
     try {
-        // Wait for the connection to open
-        const WASocket = await amdiWA.ev.on("open.connection");
+        // Start the WhatsApp bot
+        await amdiWA.start();
 
-        // Display the QR code for authentication
-        await qrDisplayDL();
-        await amdiWEB.appObj();
+        // Wait for the connection to open
+        amdiWA.ev.on("open.connection", async () => {
+            console.log("Connection opened successfully");
+
+            // Display the QR code for authentication
+            await qrDisplayDL();
+            await amdiWEB.appObj();
+        });
 
         // Set up event listeners
         amdiWA.ev.on("connection.update", (update) => {
-            console.info("Connection Update:", update);
+            console.log("Connection Update:", update);
         });
 
         amdiWA.ev.on("auth.update", (authUpdate) => {
-            console.info("Auth Update:", authUpdate);
+            console.log("Authentication Update:", authUpdate);
         });
 
         amdiWA.ev.on("messages.upsert", (message) => {
-            console.info("New Message:", message);
+            console.log("New Message:", message);
         });
 
         amdiWA.ev.on("group.updates", (groupUpdate) => {
-            console.info("Group Update:", groupUpdate);
+            console.log("Group Update:", groupUpdate);
         });
 
-        amdiWA.ev.on("call.manage", (call) => {
-            console.info("Call Event:", call);
+        amdiWA.ev.on("call.manage", (callEvent) => {
+            console.log("Call Event:", callEvent);
         });
 
     } catch (error) {
-        console.error("Error during event setup:", error);
+        console.error("Error starting the bot:", error);
     }
 };
-
-// Initialize event handling
-events().catch((error) => {
-    console.error("Failed to initialize events:", error);
-});
 
 // Modify console.info to filter specific logs
 const originalConsoleInfo = console.info;
@@ -107,8 +104,11 @@ console.info = function (...args) {
             originalConsoleInfo(...args);
         }
     } catch (error) {
-        originalConsoleInfo("Error filtering log:", error);
+        originalConsoleInfo("Error in log filtering:", error);
     }
 };
 
- 
+// Initialize the bot
+startBot().catch((error) => {
+    console.error("Failed to initialize the bot:", error);
+});
